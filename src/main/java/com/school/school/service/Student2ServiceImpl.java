@@ -25,22 +25,26 @@ public class Student2ServiceImpl implements Student2Service {
     public Optional<ResponseDto> addStudent(Student student) {
 
 
-      if(Optional.of(Gender.valueOf(student.getGender())).isPresent()) {
+        try {
+            if (Optional.of(Gender.valueOf(student.getGender())).isPresent()) {
 
-          Optional<Student> studentOptional = Optional.of(studentRepo.save(student));
+                Optional<Student> studentOptional = Optional.of(studentRepo.save(student));
 
-          ResponseDto responseDto=new ResponseDto();
-          responseDto.setMessage(STUDENT_SUCCESS_CREATE_MESSAGE);
-          responseDto.setStatusCode(SUCCESS_CODE);
-          return Optional.of(responseDto);
-      }else {
+                ResponseDto responseDto = new ResponseDto();
+                responseDto.setMessage(STUDENT_SUCCESS_CREATE_MESSAGE);
+                responseDto.setStatusCode(SUCCESS_CODE);
+                return Optional.of(responseDto);
+            }
+        }catch (Exception e){
 
-          ResponseDto responseDto=new ResponseDto();
-          responseDto.setMessage(STUDENT_FAILED_MESSAGE);
-          responseDto.setStatusCode(FAILED_CODE);
-          return Optional.of(responseDto);
-
+         System.out.println("error in sudent message: "+e.getMessage());
       }
+
+        ResponseDto responseDto=new ResponseDto();
+        responseDto.setMessage(STUDENT_FAILED_MESSAGE);
+        responseDto.setStatusCode(FAILED_CODE);
+        return Optional.of(responseDto);
+
 
       /*  if (studentOptional.isPresent()) {
             return Optional.of(

@@ -24,6 +24,8 @@ public class LoginController {
 
     @PostMapping("")
     public ResponseDto userLogin(@RequestHeader Map<String, String> headers, @RequestBody LoginDto loginDto) {
+
+
         headers.forEach((key, value) -> {
 
             System.out.println("key: " + key + " value: " + value);
@@ -31,7 +33,10 @@ public class LoginController {
         });
         return loginService.login(loginDto.getUserName(), loginDto.getPassword());
 
+
+
     }
+
 
 
     @PostMapping("/user")

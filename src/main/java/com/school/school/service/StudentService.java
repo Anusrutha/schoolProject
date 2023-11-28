@@ -5,6 +5,7 @@ import com.school.school.entity.Student;
 import com.school.school.repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,6 +20,9 @@ public class StudentService implements StudentServiceInterface {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    KafkaTemplate<String, String> kafkaTemplate;
 //Class cs= new Class();
 
 
@@ -30,18 +34,18 @@ public class StudentService implements StudentServiceInterface {
 
         //i need send the email to student
 
-//         EmailSendDto emailSendDto=new EmailSendDto();
-//         emailSendDto.setEmailId(studentResponse.getStudentEmail());
-//         emailSendDto.setMessage(studentResponse.getStudentName()+" is successfully created with id "+studentResponse.getStudentId());
-
         EmailSendDto emailSendDto = EmailSendDto.builder()
                 .message(studentResponse.getStudentName() + " is successfully created with id " + studentResponse.getStudentId())
                 .emailId(studentResponse.getStudentEmail())
                 .build();
 
 
+
+        kafkaTemplate.send("email-sent-topic", studentResponse.getStudentEmail());
+//        kafkaTemplate.send("sample-topic", emailSendDto);
+
 //        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> emailResponse = restTemplate.postForEntity("http://localhost:8081/email", emailSendDto, String.class);
+//        ResponseEntity<String> emailResponse = restTemplate.postForEntity("http://localhost:8081/email", emailSendDto, String.class);
 
 //        System.out.println("emailResponse:");
 //        System.out.println(emailResponse.getBody());
@@ -103,5 +107,15 @@ public class StudentService implements StudentServiceInterface {
     @Override
     public List<Student> getStudentByName(String studentName) {
         return studentRepo.findByStudentName(studentName);
+    }
+
+    @Override
+    public int addValues(int a, int b) {
+        return a+b;
+    }
+
+    @Override
+    public int addMoreValues(int a, int b) {
+        return a+b+1;
     }
 }
